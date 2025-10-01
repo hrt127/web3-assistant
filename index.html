@@ -5,35 +5,303 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; margin: 2rem; }
-    h1, h2 { color: #2e3a57; }
-    section { margin: 2rem 0; }
-    .card { background: #f4f6fb; padding: 1rem; border-radius: 7px; margin-bottom: 1rem;}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background-color: #0f1419;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-bottom: 1px solid #2a2f36;
+    }
+
+    .logo { font-size: 28px; font-weight: bold; color: #00d4ff; }
+    
+    .market-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+
+    .stat-item { display: flex; flex-direction: column; text-align: center; }
+    .stat-label { color: #8b949e; font-size: 12px; }
+    .stat-value { color: #ffffff; font-weight: bold; }
+    .positive { color: #00ff88; }
+    .negative { color: #ff4757; }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #1c2128;
+      border: 1px solid #2a2f36;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card h3 {
+      color: #00d4ff;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .gainer-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #2a2f36;
+    }
+
+    .gainer-item:last-child { border-bottom: none; }
+
+    .coin-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .coin-rank {
+      background: #2a2f36;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .price-info {
+      text-align: right;
+    }
+
+    .price { font-weight: bold; }
+    .change { font-size: 12px; }
+
+    .activities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .activity-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #2a2f36;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .task-list {
+      background: #1c2128;
+      border: 1px solid #2a2f36;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a2f36;
+    }
+
+    .task-item:last-child { border-bottom: none; }
+
+    .task-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #2a2f36;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .market-overview {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #1c2128;
+      border: 1px solid #2a2f36;
+      border-radius: 12px;
+    }
+
+    .market-cap { font-size: 24px; font-weight: bold; }
+    .market-change { color: #00ff88; }
+
+    .refresh-btn {
+      background: #00d4ff;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .refresh-btn:hover { background: #00b8e6; }
   </style>
 </head>
 <body>
-  <h1>Web3 & Productivity Dashboard</h1>
+  <div class="header">
+    <div class="logo">🚀 Web3 Dashboard</div>
+    <div class="market-stats">
+      <div class="stat-item">
+        <div class="stat-label">Total Market Cap</div>
+        <div class="stat-value" id="total-mcap">$4.06T</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">24h Vol</div>
+        <div class="stat-value" id="total-volume">$260.67B</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">BTC Dominance</div>
+        <div class="stat-value" id="btc-dominance">57.67%</div>
+      </div>
+    </div>
+  </div>
 
-  <section>
-    <h2>Crypto/Web3 Daily Brief</h2>
-    <div class="card" id="crypto-news">Add headlines and updates here!</div>
-  </section>
+  <div class="market-overview">
+    <div class="market-cap">The total cryptocurrency market cap today is <span id="live-mcap">$4.06T</span></div>
+    <div class="market-change">a <span class="positive" id="mcap-change">3.71%</span> change in the last 24 hours</div>
+    <button class="refresh-btn" onclick="refreshData()">Refresh Live Data</button>
+  </div>
 
-  <section>
-    <h2>Daily Task List</h2>
-    <ul id="tasks">
-      <li>Check crypto news</li>
-      <li>Community outreach (Discord/Telegram)</li>
-      <li>Learn something new</li>
-      <li>Plan & Review</li>
-      <li>Exercise</li>
-    </ul>
-  </section>
+  <div class="dashboard-grid">
+    <div class="card">
+      <h3>🔥 Top Gainers</h3>
+      <div id="top-gainers">
+        <div class="gainer-item">
+          <div class="coin-info">
+            <div class="coin-rank">71</div>
+            <div>ZEC Zcash</div>
+          </div>
+          <div class="price-info">
+            <div class="price">$90.57</div>
+            <div class="change positive">30.78%</div>
+          </div>
+        </div>
+        <div class="gainer-item">
+          <div class="coin-info">
+            <div class="coin-rank">52</div>
+            <div>PUMP Pump.fun</div>
+          </div>
+          <div class="price-info">
+            <div class="price">$0.006754</div>
+            <div class="change positive">20.85%</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <section>
-    <h2>Learning Resources</h2>
-    <div class="card"><a href="https://github.com/microsoft/Data-Science-For-Beginners" target="_blank">Data Science for Beginners</a></div>
-    <div class="card"><a href="https://github.com/microsoft/Web-Dev-For-Beginners" target="_blank">Web Dev for Beginners</a></div>
-  </section>
+    <div class="card">
+      <h3>📊 Market Stats</h3>
+      <div class="stat-item">
+        <div class="stat-label">Total Market Cap</div>
+        <div class="stat-value positive">$4.06T <span class="positive">3.71%</span></div>
+      </div>
+      <div class="stat-item" style="margin-top: 15px;">
+        <div class="stat-label">BTC Dominance</div>
+        <div class="stat-value">57.64% <span class="negative">-0.12%</span></div>
+      </div>
+      <div class="stat-item" style="margin-top: 15px;">
+        <div class="stat-label">Fear & Greed Index</div>
+        <div class="stat-value">40 <span style="color: #ff9f00;">Fear</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>⚡ New Activities</h3>
+      <div class="activity-item">
+        <div>HyperLend</div>
+        <div style="color: #00ff88;">Point Farming</div>
+      </div>
+      <div class="activity-item">
+        <div>OneBalance</div>
+        <div style="color: #00d4ff;">Potential Airdrop</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="activities-grid">
+    <div class="task-list">
+      <h3 style="color: #00d4ff; margin-bottom: 15px;">📋 Daily Tasks</h3>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div>Check crypto news & market updates</div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div>Community outreach (Discord/Telegram)</div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div>Social media engagement</div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div>Learning & research</div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div>Exercise & health check</div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div>Life planning & review</div>
+      </div>
+    </div>
+
+    <div class="task-list">
+      <h3 style="color: #00d4ff; margin-bottom: 15px;">📚 Learning Resources</h3>
+      <div class="activity-item">
+        <div><a href="https://github.com/microsoft/Data-Science-For-Beginners" target="_blank" style="color: #ffffff; text-decoration: none;">Data Science for Beginners</a></div>
+        <div style="color: #8b949e;">GitHub</div>
+      </div>
+      <div class="activity-item">
+        <div><a href="https://github.com/microsoft/Web-Dev-For-Beginners" target="_blank" style="color: #ffffff; text-decoration: none;">Web Dev for Beginners</a></div>
+        <div style="color: #8b949e;">GitHub</div>
+      </div>
+      <div class="activity-item">
+        <div><a href="https://dropstab.com" target="_blank" style="color: #ffffff; text-decoration: none;">DropsTab</a></div>
+        <div style="color: #8b949e;">Crypto Research</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function refreshData() {
+      // Placeholder for live API calls
+      console.log('Refreshing live data...');
+      // We'll add real API calls here next
+      
+      // Simulate data update
+      document.getElementById('live-mcap').textContent = '$4.06T';
+      document.getElementById('mcap-change').textContent = '3.71%';
+      
+      alert('Live data refreshed! (We\'ll connect real APIs next)');
+    }
+
+    // Task checkbox functionality
+    document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('click', function() {
+        this.style.backgroundColor = this.style.backgroundColor ? '' : '#00ff88';
+        this.style.borderColor = this.style.backgroundColor ? '#00ff88' : '#2a2f36';
+      });
+    });
+  </script>
 </body>
 </html>
