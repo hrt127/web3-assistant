@@ -49,6 +49,7 @@
       border: 1px solid #2a2f36;
       border-radius: 12px;
       padding: 20px;
+      margin-bottom: 0px;
     }
 
     .card h3 {
@@ -80,10 +81,7 @@
       font-size: 12px;
     }
 
-    .price-info {
-      text-align: right;
-    }
-
+    .price-info { text-align: right; }
     .price { font-weight: bold; }
     .change { font-size: 12px; }
 
@@ -118,9 +116,7 @@
       padding: 10px 0;
       border-bottom: 1px solid #2a2f36;
     }
-
     .task-item:last-child { border-bottom: none; }
-
     .task-checkbox {
       width: 18px;
       height: 18px;
@@ -137,22 +133,44 @@
       border: 1px solid #2a2f36;
       border-radius: 12px;
     }
-
     .market-cap { font-size: 24px; font-weight: bold; }
     .market-change { color: #00ff88; }
-
     .refresh-btn {
-      background: #00d4ff;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
+      background: #00d4ff; color: #000; border: none;
+      padding: 10px 20px; border-radius: 8px; cursor: pointer;
+      font-weight: bold; margin-top: 10px;
     }
-
     .refresh-btn:hover { background: #00b8e6; }
+
+    /* NEWS CARD STYLES */
+    .news-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .news-item {
+      padding: 10px;
+      background: #19202f;
+      border-radius: 7px;
+      margin-bottom: 12px;
+      font-size: 1em;
+    }
+    .news-item a {
+      color: #00d4ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .news-item a:hover {
+      text-decoration: underline;
+      color: #ffd603;
+    }
+    @media (max-width: 1024px) {
+      .dashboard-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 700px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .activities-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -206,7 +224,6 @@
         </div>
       </div>
     </div>
-
     <div class="card">
       <h3>📊 Market Stats</h3>
       <div class="stat-item">
@@ -222,17 +239,15 @@
         <div class="stat-value">40 <span style="color: #ff9f00;">Fear</span></div>
       </div>
     </div>
-
-<div class="card">
-  <h3>🐦 Latest Tweets (@0xTulipKing)</h3>
-  <a class="twitter-timeline" 
-     data-theme="dark"
-     href="https://twitter.com/0xTulipKing?ref_src=twsrc%5Etfw">
-     Tweets by 0xTulipKing
-  </a>
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</div>
-    
+    <div class="card">
+      <h3>🐦 Latest Tweets (@0xTulipKing)</h3>
+      <a class="twitter-timeline" 
+         data-theme="dark"
+         href="https://twitter.com/0xTulipKing?ref_src=twsrc%5Etfw">
+         Tweets by 0xTulipKing
+      </a>
+      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
     <div class="card">
       <h3>⚡ New Activities</h3>
       <div class="activity-item">
@@ -243,6 +258,23 @@
         <div>OneBalance</div>
         <div style="color: #00d4ff;">Potential Airdrop</div>
       </div>
+    </div>
+    <!-- Add news feeds as cards -->
+    <div class="card">
+      <h3>📰 Bitcoin News</h3>
+      <ul class="news-list" id="btc-news"></ul>
+    </div>
+    <div class="card">
+      <h3>📰 Ethereum News</h3>
+      <ul class="news-list" id="eth-news"></ul>
+    </div>
+    <div class="card">
+      <h3>📰 DeFi Major News</h3>
+      <ul class="news-list" id="defi-news"></ul>
+    </div>
+    <div class="card">
+      <h3>📰 Bera News</h3>
+      <ul class="news-list" id="bera-news"></ul>
     </div>
   </div>
 
@@ -274,7 +306,6 @@
         <div>Life planning & review</div>
       </div>
     </div>
-
     <div class="task-list">
       <h3 style="color: #00d4ff; margin-bottom: 15px;">📚 Learning Resources</h3>
       <div class="activity-item">
@@ -291,20 +322,41 @@
       </div>
     </div>
   </div>
-
   <script>
+    // Live news feeds for BTC/ETH/DEFI/BERA
+    function fetchCryptoNews(keyword, containerId) {
+      const rssApi = `https://cryptonews-api.com/api/v1?tickers=${keyword}&items=8&extraParams=web3-assistant&lang=EN&type=breaking&rss=1`;
+      fetch(rssApi)
+        .then(res => res.json())
+        .then(data => {
+          const newsList = document.getElementById(containerId);
+          if (!data || !data.data || data.data.length === 0) {
+            newsList.innerHTML = `<li class="news-item">No news found for ${keyword}.</li>`;
+            return;
+          }
+          newsList.innerHTML = data.data.slice(0,8).map(item =>
+            `<li class="news-item"><a href="${item.news_url}" target="_blank">${item.title}</a><span style="color:#ffd603; margin-left:8px;">${new Date(item.date).toLocaleDateString()}</span></li>`
+          ).join('');
+        })
+        .catch(() => {
+          document.getElementById(containerId).innerHTML = `<li class="news-item">Could not load news for ${keyword}.</li>`;
+        });
+    }
+    fetchCryptoNews('BTC', 'btc-news');
+    fetchCryptoNews('ETH', 'eth-news');
+    fetchCryptoNews('DEFI', 'defi-news');
+    fetchCryptoNews('BERA', 'bera-news'); // Replace with another ticker/topic if BERA not found
+
+    // Other dashboard logic
     function refreshData() {
       // Placeholder for live API calls
       console.log('Refreshing live data...');
       // We'll add real API calls here next
-      
       // Simulate data update
       document.getElementById('live-mcap').textContent = '$4.06T';
       document.getElementById('mcap-change').textContent = '3.71%';
-      
       alert('Live data refreshed! (We\'ll connect real APIs next)');
     }
-
     // Task checkbox functionality
     document.querySelectorAll('.task-checkbox').forEach(checkbox => {
       checkbox.addEventListener('click', function() {
